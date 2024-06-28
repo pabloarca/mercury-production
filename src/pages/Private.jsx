@@ -1,4 +1,3 @@
-// src/pages/Private.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { auth, database } from '../firebaseConfig';
@@ -9,12 +8,8 @@ import PrivatePopup from '../components/PrivatePopup';
 import { Legend, Logo } from '../components/Legend';
 import MapStyleToggle from '../components/MapStyleToggle';
 
-
 const Private = () => {
-  // Obtener el parámetro 'municipio' de la URL
   const { municipio } = useParams();
-
-  // Definir estados para almacenar los datos geojson y de municipio
   const [geoJson, setGeoJson] = useState(null);
   const [municipioData, setMunicipioData] = useState(null);
   const [mapStyle, setMapStyle] = useState('mapbox://styles/mapbox/light-v11');
@@ -22,7 +17,6 @@ const Private = () => {
   const mapRef = useRef(null);
   const navigate = useNavigate();
 
-  // Función para obtener datos del municipio desde Firebase
   const fetchMunicipioData = async () => {
     try {
       const user = auth.currentUser;
@@ -57,12 +51,10 @@ const Private = () => {
     }
   };
 
-  // Ejecutar fetchMunicipioData cuando el componente se monta o el municipio cambia
   useEffect(() => {
     fetchMunicipioData();
   }, [municipio]);
 
-  // Función para manejar el clic en el mapa
   const handleMapClick = (event) => {
     const features = mapRef.current.queryRenderedFeatures(event.point, {
       layers: ['data-fill']
@@ -80,8 +72,8 @@ const Private = () => {
     }
   };
 
-  // Función para actualizar los datos después de modificar la clasificación
   const updateClasif = () => {
+    console.log('Refrescando datos...');
     fetchMunicipioData();
   };
 
@@ -94,7 +86,7 @@ const Private = () => {
   };
 
 
-  // Si no se han cargado los datos del municipio, mostrar un mensaje de carga
+
   if (!municipioData) {
     return <div>Loading...</div>;
   }
@@ -111,7 +103,7 @@ const Private = () => {
         style={{ width: '100%', height: '100%' }}
         mapStyle={mapStyle}
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
-        onClick={handleMapClick} // Añadir el manejador de clics
+        onClick={handleMapClick}
       >
         {geoJson && (
           <Source id="my-data" type="geojson" data={geoJson}>
@@ -120,7 +112,6 @@ const Private = () => {
               type="line"
               paint={{
                 'line-color': {
-                  // Usar la propiedad 'clasif' para definir el color de las líneas
                   type: 'categorical',
                   property: 'clasif',
                   stops: [
@@ -148,9 +139,9 @@ const Private = () => {
             longitude={popupInfo.longitude}
             latitude={popupInfo.latitude}
             properties={popupInfo.properties}
+            onClose={() => setPopupInfo(null)}
             municipio={municipio}
             updateClasif={updateClasif}
-            onClose={() => setPopupInfo(null)}
           />
         )}
       </Map>

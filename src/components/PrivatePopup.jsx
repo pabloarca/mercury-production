@@ -1,10 +1,40 @@
 // src/components/PrivatePopup.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Popup as MapboxPopup } from 'react-map-gl';
 import UpdateClasifButton from './UpdateClasifButton';
 
 // Componente que muestra un popup con la información de una parcela
-const PrivatePopup = ({ longitude, latitude, properties, municipio, updateClasif, onClose }) => {
+const PrivatePopup = ({ longitude, latitude, properties, onClose, municipio, updateClasif }) => {
+  const [showModify, setShowModify] = useState(false);
+
+  useEffect(() => {
+    setShowModify(false); // Resetear el estado de showModify cuando cambian las propiedades del popup
+  }, [properties]);
+
+  const handleModifyClick = () => {
+    setShowModify(true);
+  };
+
+  const handleCancelClick = () => {
+    setShowModify(false);
+  };
+
+  // Función para obtener el mensaje basado en la clasificación
+  const getDynamicMessage = (clasif) => {
+    switch (clasif) {
+      case 1:
+        return "Vas a cambiar el estado de público con amianto a público sin amianto, ¿estás seguro?";
+      case 2:
+        return "Esta edificación privada con amianto desaparecerá del mapa y los cambios son irreversibles, ¿Estás seguro?";
+      case 4:
+        return "Vas a cambiar del estado público sin amianto a público con amianto, ¿estás seguro?";
+      default:
+        return "";
+    }
+  };
+
+  const dynamicMessage = getDynamicMessage(properties.clasif);
+
   return (
     <MapboxPopup
       longitude={longitude}
@@ -15,7 +45,7 @@ const PrivatePopup = ({ longitude, latitude, properties, municipio, updateClasif
       className="z-50 custom-popup"
     >
       <div className="p-2">
-        {properties.documentLi && (
+      {properties.documentLi && (
           <img
             src={properties.documentLi}
             alt="Image"
@@ -39,13 +69,31 @@ const PrivatePopup = ({ longitude, latitude, properties, municipio, updateClasif
             </a>
           </p>
         )}
-        {/* Renderizar el botón de actualización sólo si la clasificación es 1 o 4 */}
-        {(properties.clasif === 1 || properties.clasif === 4) && (
-          <UpdateClasifButton 
-            municipio={municipio} 
-            featureId={properties.codigo} 
-            updateClasif={updateClasif} 
-          />
+        
+        {properties.clasif !== 3 && (
+          <button
+            className="mt-2 bg-blue-500 text-white py-1 px-3 rounded"
+            onClick={handleModifyClick}
+          >
+            Modificar estado
+          </button>
+        )}
+
+        {showModify && properties.clasif !== 3 && (
+          <div className="mt-2">
+            <p className="text-xs pt-4">{dynamicMessage}</p>
+            <UpdateClasifButton
+              municipio={municipio}
+              featureId={properties.codigo}
+              updateClasif={updateClasif}
+            />
+            <button
+              className="mt-2 bg-red-400 text-white py-1 px-3 rounded"
+              onClick={handleCancelClick}
+            >
+              Cancelar
+            </button>
+          </div>
         )}
       </div>
     </MapboxPopup>
