@@ -32,7 +32,6 @@ const PublicPopup = ({ popupInfo, onClose }) => {
           />
         )}
         <h3 className="font-bold pt-3">Referencia {properties.localId}</h3>
-        
         <p><strong>Tipo:</strong> {properties.Tipo_edif}</p>
         <p><strong>Fecha de construcción:</strong> {properties.fecha_cons}</p>
         <p><strong>Dirección:</strong> {properties.dire}</p>

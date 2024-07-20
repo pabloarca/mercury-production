@@ -25,7 +25,7 @@ const PrivatePopup = ({ longitude, latitude, properties, onClose, municipio, upd
       case 1:
         return "Vas a cambiar el estado de público con amianto a público sin amianto, ¿estás seguro?";
       case 2:
-        return "Esta edificación privada con amianto se clasificará como -Edificación privada sin amianto- y desaparecerá del mapa. Los cambios son irreversibles, ¿Estás seguro?";
+        return "Esta edificación privada con amianto desaparecerá del mapa y los cambios son irreversibles, ¿Estás seguro?";
       case 4:
         return "Vas a cambiar del estado público sin amianto a público con amianto, ¿estás seguro?";
       default:
