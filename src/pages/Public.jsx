@@ -1,4 +1,3 @@
-// src/pages/Public.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { database } from '../firebaseConfig'; // Ajusta la ruta si es necesario
@@ -24,20 +23,27 @@ const Public = () => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         setMunicipioData(data);
-        const parcelas = Object.values(data.parcelas).map(parcela => ({
-          type: 'Feature',
-          geometry: parcela.geometry,
-          properties: {
-            codigo: parcela.codigo,
-            documentLi: parcela.documentLi,
-            localId: parcela.localId,
-            Tipo_edif: parcela.Tipo_edif,
-            fecha_cons: parcela.fecha_cons,
-            dire: parcela.dire,
-            informatio: parcela.informatio,
-            clasif: parcela.clasif,
-          },
-        }));
+        const parcelas = Object.values(data.parcelas).map(parcela => {
+          // Convert HTTP URLs to HTTPS
+          let documentLi = parcela.documentLi;
+          if (documentLi && documentLi.startsWith('http://')) {
+            documentLi = documentLi.replace('http://', 'https://');
+          }
+          return {
+            type: 'Feature',
+            geometry: parcela.geometry,
+            properties: {
+              codigo: parcela.codigo,
+              documentLi: documentLi,
+              localId: parcela.localId,
+              Tipo_edif: parcela.Tipo_edif,
+              fecha_cons: parcela.fecha_cons,
+              dire: parcela.dire,
+              informatio: parcela.informatio,
+              clasif: parcela.clasif,
+            },
+          };
+        });
 
         const geojson = {
           type: 'FeatureCollection',
