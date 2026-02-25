@@ -57,6 +57,7 @@ const PrivatePopup = ({ longitude, latitude, properties, onClose, municipio, upd
         <p><strong>Tipo:</strong> {properties.Tipo_edif}</p>
         <p><strong>Fecha de construcción:</strong> {properties.fecha_cons}</p>
         <p><strong>Dirección:</strong> {properties.dire}</p>
+        <p><strong>Superficie amianto:</strong> {properties.superf_am}</p>
         {properties.informatio && (
           <p>
             <a 

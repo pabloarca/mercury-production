@@ -8,6 +8,12 @@ import PublicPopup from '../components/PublicPopup'; // Ajusta la ruta si es nec
 import { Legend, Logo } from '../components/Legend';
 import MapStyleToggle from '../components/MapStyleToggle'; // Importa el componente MapStyleToggle
 
+// Lista de municipios con la suscripción caducada
+const MUNICIPIOS_CADUCADOS = [
+  'coin', 'benamocarra', 'estepona', 'lairuela', 
+  'linares', 'manchareal', 'cazorla', 'pizarra'
+];
+
 const Public = () => {
   const { municipio } = useParams();
   const [geoJson, setGeoJson] = useState(null);
@@ -15,6 +21,18 @@ const Public = () => {
   const [municipioData, setMunicipioData] = useState(null);
   const [mapStyle, setMapStyle] = useState('mapbox://styles/mapbox/light-v11');
   const mapRef = useRef(null);
+
+  // Comprobar si el municipio actual está en la lista de caducados
+  if (municipio && MUNICIPIOS_CADUCADOS.includes(municipio.toLowerCase())) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen w-screen bg-gray-100">
+        <div className="bg-white p-10 rounded-lg shadow-xl text-center border-t-4 border-red-500">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">Renovar suscripción</h1>
+          <p className="text-xl text-gray-600">Contactar con <span className="font-semibold text-blue-900">AST-Amianto</span></p>
+        </div>
+      </div>
+    );
+  }
 
   const fetchMunicipioData = async () => {
     try {
